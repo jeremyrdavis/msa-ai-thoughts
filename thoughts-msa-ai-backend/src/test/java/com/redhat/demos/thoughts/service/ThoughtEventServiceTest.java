@@ -79,6 +79,44 @@ public class ThoughtEventServiceTest {
         assertEquals(1, thoughtsSink.received().size());
     }
 
+    @Test
+    public void testEventIncludesAuthorFieldsOnCreate() {
+        InMemorySink<Thought> thoughtsSink = connector.sink("thoughts-events");
+
+        given()
+                .contentType(ContentType.JSON)
+                .body("{\"content\": \"Testing author fields in Kafka event payload\", \"author\": \"Marcus Aurelius\", \"authorBio\": \"Roman Emperor and Stoic philosopher\"}")
+                .when()
+                .post("/thoughts")
+                .then()
+                .statusCode(201);
+
+        assertEquals(1, thoughtsSink.received().size());
+        Thought published = thoughtsSink.received().get(0).getPayload();
+        assertEquals("Testing author fields in Kafka event payload", published.content);
+        assertEquals("Marcus Aurelius", published.author);
+        assertEquals("Roman Emperor and Stoic philosopher", published.authorBio);
+    }
+
+    @Test
+    public void testEventIncludesDefaultAuthorWhenNotProvided() {
+        InMemorySink<Thought> thoughtsSink = connector.sink("thoughts-events");
+
+        given()
+                .contentType(ContentType.JSON)
+                .body("{\"content\": \"Testing default author in Kafka event payload\"}")
+                .when()
+                .post("/thoughts")
+                .then()
+                .statusCode(201);
+
+        assertEquals(1, thoughtsSink.received().size());
+        Thought published = thoughtsSink.received().get(0).getPayload();
+        assertEquals("Testing default author in Kafka event payload", published.content);
+        assertEquals("Unknown", published.author);
+        assertEquals("Unknown", published.authorBio);
+    }
+
     @Transactional
     protected Thought createTestThought(String content) {
         Thought thought = new Thought();

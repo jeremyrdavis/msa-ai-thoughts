@@ -29,6 +29,18 @@ public class Thought extends PanacheEntityBase {
     @Column(name = "thumbs_down", nullable = false)
     public int thumbsDown = 0;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    public ThoughtStatus status;
+
+    @Size(max = 200, message = "Author must be no more than 200 characters")
+    @Column(name = "author", nullable = false, length = 200)
+    public String author;
+
+    @Size(max = 200, message = "Author bio must be no more than 200 characters")
+    @Column(name = "author_bio", nullable = false, length = 200)
+    public String authorBio;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     public LocalDateTime createdAt;
 
@@ -40,6 +52,15 @@ public class Thought extends PanacheEntityBase {
         LocalDateTime now = LocalDateTime.now();
         this.createdAt = now;
         this.updatedAt = now;
+        if (this.status == null) {
+            this.status = ThoughtStatus.IN_REVIEW;
+        }
+        if (this.author == null || this.author.trim().isEmpty()) {
+            this.author = "Unknown";
+        }
+        if (this.authorBio == null || this.authorBio.trim().isEmpty()) {
+            this.authorBio = "Unknown";
+        }
     }
 
     @PreUpdate

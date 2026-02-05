@@ -60,6 +60,15 @@ public class ThoughtResource {
 
         Thought thought = existingThought.get();
         thought.content = updatedThought.content;
+        if (updatedThought.status != null) {
+            thought.status = updatedThought.status;
+        }
+        if (updatedThought.author != null) {
+            thought.author = updatedThought.author;
+        }
+        if (updatedThought.authorBio != null) {
+            thought.authorBio = updatedThought.authorBio;
+        }
         thought.persist();
         eventService.publishThoughtUpdated(thought);
 

@@ -114,4 +114,135 @@ public class ThoughtEntityTest {
         Optional<Thought> randomThought = Thought.findRandom();
         assertFalse(randomThought.isPresent());
     }
+
+    @Test
+    @Transactional
+    public void testStatusEnumPersistence() {
+        Thought thought = new Thought();
+        thought.content = "Testing status enum storage as string in database";
+        thought.status = ThoughtStatus.APPROVED;
+        thought.persist();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        Thought retrieved = Thought.findById(thought.id);
+        assertNotNull(retrieved.status);
+        assertEquals(ThoughtStatus.APPROVED, retrieved.status);
+    }
+
+    @Test
+    @Transactional
+    public void testStatusFieldDefaultValue() {
+        Thought thought = new Thought();
+        thought.content = "Testing default status is set to IN_REVIEW automatically";
+        thought.persist();
+
+        assertNotNull(thought.status);
+        assertEquals(ThoughtStatus.IN_REVIEW, thought.status);
+    }
+
+    @Test
+    @Transactional
+    public void testStatusFieldInJsonResponse() {
+        Thought thought = new Thought();
+        thought.content = "Testing that status field appears in entity representation";
+        thought.status = ThoughtStatus.APPROVED;
+        thought.persist();
+
+        Thought retrieved = Thought.findById(thought.id);
+        assertNotNull(retrieved.status);
+        assertEquals(ThoughtStatus.APPROVED, retrieved.status);
+    }
+
+    // Author field tests
+    @Test
+    @Transactional
+    public void testAuthorFieldPersistence() {
+        Thought thought = new Thought();
+        thought.content = "This is a thought with an author";
+        thought.author = "Marcus Aurelius";
+        thought.authorBio = "Roman Emperor and Stoic philosopher";
+        thought.persist();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        Thought retrieved = Thought.findById(thought.id);
+        assertNotNull(retrieved.author);
+        assertEquals("Marcus Aurelius", retrieved.author);
+        assertNotNull(retrieved.authorBio);
+        assertEquals("Roman Emperor and Stoic philosopher", retrieved.authorBio);
+    }
+
+    @Test
+    @Transactional
+    public void testAuthorDefaultValueHandling() {
+        Thought thought = new Thought();
+        thought.content = "This thought has no author specified";
+        thought.persist();
+
+        assertNotNull(thought.author);
+        assertEquals("Unknown", thought.author);
+        assertNotNull(thought.authorBio);
+        assertEquals("Unknown", thought.authorBio);
+    }
+
+    @Test
+    public void testAuthorSizeValidation() {
+        Thought thought = new Thought();
+        thought.content = "This is a valid thought content";
+        thought.author = "a".repeat(201);
+        thought.authorBio = "Valid bio";
+
+        Set<ConstraintViolation<Thought>> violations = validator.validate(thought);
+        assertFalse(violations.isEmpty());
+        assertTrue(violations.stream().anyMatch(v ->
+            v.getPropertyPath().toString().equals("author") &&
+            v.getMessage().contains("200")));
+    }
+
+    @Test
+    public void testAuthorBioSizeValidation() {
+        Thought thought = new Thought();
+        thought.content = "This is a valid thought content";
+        thought.author = "Valid author";
+        thought.authorBio = "b".repeat(201);
+
+        Set<ConstraintViolation<Thought>> violations = validator.validate(thought);
+        assertFalse(violations.isEmpty());
+        assertTrue(violations.stream().anyMatch(v ->
+            v.getPropertyPath().toString().equals("authorBio") &&
+            v.getMessage().contains("200")));
+    }
+
+    @Test
+    @Transactional
+    public void testAuthorFieldsWithMaxLength() {
+        Thought thought = new Thought();
+        thought.content = "Testing maximum length for author fields";
+        thought.author = "a".repeat(200);
+        thought.authorBio = "b".repeat(200);
+        thought.persist();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        Thought retrieved = Thought.findById(thought.id);
+        assertEquals(200, retrieved.author.length());
+        assertEquals(200, retrieved.authorBio.length());
+    }
+
+    @Test
+    @Transactional
+    public void testEmptyAuthorFieldsSetToDefault() {
+        Thought thought = new Thought();
+        thought.content = "This thought has empty author fields";
+        thought.author = "";
+        thought.authorBio = "";
+        thought.persist();
+
+        assertEquals("Unknown", thought.author);
+        assertEquals("Unknown", thought.authorBio);
+    }
 }

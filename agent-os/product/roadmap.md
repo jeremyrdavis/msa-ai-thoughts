@@ -4,7 +4,7 @@
 
 2. [x] **Thoughts Service Backend** — Create Quarkus microservice with REST endpoints for CRUD operations on positive thoughts, connecting to PostgreSQL database with proper entity mapping and transaction management. `M`
 
-3. [ ] **Frontend Application** — Build Next.js application with shadcn/ui components for displaying thoughts, including forms for creating/editing thoughts and responsive layout, compiled to static site. `M`
+3. [x] **Frontend Application** — Build Next.js application with shadcn/ui components for displaying thoughts, including forms for creating/editing thoughts and responsive layout, compiled to static site. `M`
 
 4. [ ] **Frontend Service Integration** — Create Quarkus microservice to serve the static Next.js frontend and provide backend API endpoints, implementing proper CORS and routing configuration. `S`
 

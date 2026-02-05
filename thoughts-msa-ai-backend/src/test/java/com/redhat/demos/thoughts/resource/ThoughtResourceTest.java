@@ -127,6 +127,176 @@ public class ThoughtResourceTest {
                 .body("content", notNullValue());
     }
 
+    @Test
+    public void testCreateThoughtWithDefaultStatus() {
+        String thoughtContent = "Testing default status in POST response";
+
+        given()
+                .contentType(ContentType.JSON)
+                .body("{\"content\": \"" + thoughtContent + "\"}")
+                .when()
+                .post("/thoughts")
+                .then()
+                .statusCode(201)
+                .body("status", equalTo("IN_REVIEW"));
+    }
+
+    @Test
+    public void testGetThoughtIncludesStatus() {
+        Thought thought = createTestThought("Testing status in GET response");
+
+        given()
+                .when()
+                .get("/thoughts/" + thought.id)
+                .then()
+                .statusCode(200)
+                .body("status", notNullValue());
+    }
+
+    @Test
+    public void testListThoughtsIncludesStatus() {
+        createTestThought("Testing status in list response");
+
+        given()
+                .when()
+                .get("/thoughts")
+                .then()
+                .statusCode(200)
+                .body("[0].status", notNullValue());
+    }
+
+    @Test
+    public void testUpdateThoughtStatus() {
+        Thought thought = createTestThought("Testing status update via PUT");
+
+        given()
+                .contentType(ContentType.JSON)
+                .body("{\"content\": \"" + thought.content + "\", \"status\": \"APPROVED\"}")
+                .when()
+                .put("/thoughts/" + thought.id)
+                .then()
+                .statusCode(200)
+                .body("status", equalTo("APPROVED"));
+    }
+
+    // Author field tests
+    @Test
+    public void testCreateThoughtWithAuthorFields() {
+        String thoughtContent = "This is a wonderful positive thought that inspires me";
+        String author = "Marcus Aurelius";
+        String authorBio = "Roman Emperor and Stoic philosopher";
+
+        given()
+                .contentType(ContentType.JSON)
+                .body("{\"content\": \"" + thoughtContent + "\", \"author\": \"" + author + "\", \"authorBio\": \"" + authorBio + "\"}")
+                .when()
+                .post("/thoughts")
+                .then()
+                .statusCode(201)
+                .body("content", equalTo(thoughtContent))
+                .body("author", equalTo(author))
+                .body("authorBio", equalTo(authorBio));
+    }
+
+    @Test
+    public void testCreateThoughtWithoutAuthorAppliesDefaults() {
+        String thoughtContent = "This is a wonderful positive thought that inspires me";
+
+        given()
+                .contentType(ContentType.JSON)
+                .body("{\"content\": \"" + thoughtContent + "\"}")
+                .when()
+                .post("/thoughts")
+                .then()
+                .statusCode(201)
+                .body("author", equalTo("Unknown"))
+                .body("authorBio", equalTo("Unknown"));
+    }
+
+    @Test
+    public void testUpdateThoughtAuthorFields() {
+        Thought thought = createTestThought("Original positive thought content");
+        String updatedAuthor = "Seneca";
+        String updatedAuthorBio = "Roman Stoic philosopher";
+
+        given()
+                .contentType(ContentType.JSON)
+                .body("{\"content\": \"" + thought.content + "\", \"author\": \"" + updatedAuthor + "\", \"authorBio\": \"" + updatedAuthorBio + "\"}")
+                .when()
+                .put("/thoughts/" + thought.id)
+                .then()
+                .statusCode(200)
+                .body("author", equalTo(updatedAuthor))
+                .body("authorBio", equalTo(updatedAuthorBio));
+    }
+
+    @Test
+    public void testGetThoughtIncludesAuthorFields() {
+        Thought thought = createTestThought("Testing author fields in GET response");
+
+        given()
+                .when()
+                .get("/thoughts/" + thought.id)
+                .then()
+                .statusCode(200)
+                .body("author", notNullValue())
+                .body("authorBio", notNullValue());
+    }
+
+    @Test
+    public void testListThoughtsIncludesAuthorFields() {
+        createTestThought("Testing author fields in list response");
+
+        given()
+                .when()
+                .get("/thoughts")
+                .then()
+                .statusCode(200)
+                .body("[0].author", notNullValue())
+                .body("[0].authorBio", notNullValue());
+    }
+
+    @Test
+    public void testRandomThoughtIncludesAuthorFields() {
+        createTestThought("Random thought with author fields test");
+
+        given()
+                .when()
+                .get("/thoughts/random")
+                .then()
+                .statusCode(200)
+                .body("author", notNullValue())
+                .body("authorBio", notNullValue());
+    }
+
+    @Test
+    public void testAuthorFieldExceeding200CharactersFails() {
+        String thoughtContent = "This is a wonderful positive thought that inspires me";
+        String longAuthor = "A".repeat(201);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body("{\"content\": \"" + thoughtContent + "\", \"author\": \"" + longAuthor + "\"}")
+                .when()
+                .post("/thoughts")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    public void testAuthorBioFieldExceeding200CharactersFails() {
+        String thoughtContent = "This is a wonderful positive thought that inspires me";
+        String longAuthorBio = "B".repeat(201);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body("{\"content\": \"" + thoughtContent + "\", \"authorBio\": \"" + longAuthorBio + "\"}")
+                .when()
+                .post("/thoughts")
+                .then()
+                .statusCode(400);
+    }
+
     @Transactional
     protected Thought createTestThought(String content) {
         Thought thought = new Thought();
