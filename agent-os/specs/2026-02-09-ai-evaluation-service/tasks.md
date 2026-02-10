@@ -222,49 +222,49 @@ Target Platform: Quarkus microservice with Langchain4j, PostgreSQL, and Kafka in
 #### Task Group 5: Evaluation Retrieval REST API
 **Dependencies:** Task Group 4
 
-- [ ] 5.0 Complete REST API layer
-  - [ ] 5.1 Write 2-8 focused tests for REST endpoints
+- [x] 5.0 Complete REST API layer
+  - [x] 5.1 Write 2-8 focused tests for REST endpoints
     - Limit to 2-8 highly focused tests maximum
     - Test GET /evaluations with pagination
     - Test GET /evaluations/thought/{thoughtId}
     - Test GET /evaluations/stats endpoint
     - Skip testing all query parameters and error scenarios
-  - [ ] 5.2 Create EvaluationDTO
+  - [x] 5.2 Create EvaluationDTO
     - Fields: id, thoughtId, thoughtContent (optional), status, similarityScore, evaluatedAt
     - Add Jackson annotations for JSON serialization
     - Include builder or constructor for easy creation
-  - [ ] 5.3 Create EvaluationStatsDTO
+  - [x] 5.3 Create EvaluationStatsDTO
     - Fields: totalEvaluated, approvedCount, rejectedCount, averageSimilarityScore
     - Add Jackson annotations
-  - [ ] 5.4 Create EvaluationResource REST controller
+  - [x] 5.4 Create EvaluationResource REST controller
     - JAX-RS resource with @Path("/evaluations")
     - @Produces(MediaType.APPLICATION_JSON)
     - Follow pattern from existing ThoughtResource
     - Inject ThoughtEvaluation repository
-  - [ ] 5.5 Implement GET /evaluations endpoint
+  - [x] 5.5 Implement GET /evaluations endpoint
     - Support pagination with query parameters: page (default 0), size (default 20)
     - Return list of EvaluationDTO
     - Use PanacheQuery for pagination
     - Return 200 status with paginated results
-  - [ ] 5.6 Implement GET /evaluations/thought/{thoughtId} endpoint
+  - [x] 5.6 Implement GET /evaluations/thought/{thoughtId} endpoint
     - Path parameter: thoughtId (UUID)
     - Return single EvaluationDTO for specified thought
     - Return 404 if evaluation not found
     - Return 200 with evaluation if found
     - Add @Valid annotation if using Bean Validation
-  - [ ] 5.7 Implement GET /evaluations/stats endpoint
+  - [x] 5.7 Implement GET /evaluations/stats endpoint
     - Calculate total evaluations count
     - Count APPROVED evaluations
     - Count REJECTED evaluations
     - Calculate average similarity score across all evaluations
     - Return EvaluationStatsDTO
     - Return 200 status
-  - [ ] 5.8 Add error handling and exception mappers
+  - [x] 5.8 Add error handling and exception mappers
     - Handle IllegalArgumentException for invalid UUIDs
     - Return appropriate error response DTOs
     - Follow pattern from existing ValidationExceptionMapper
     - Return consistent error format with message and status
-  - [ ] 5.9 Ensure REST API tests pass
+  - [x] 5.9 Ensure REST API tests pass
     - Run ONLY the 2-8 tests written in 5.1
     - Verify endpoints return correct data and status codes
     - Do NOT run the entire test suite at this stage
