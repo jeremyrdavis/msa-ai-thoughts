@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thought Evaluations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .nav-links {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .nav-links a {
+            color: #3498db;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: 500;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: 500;
+            color: #555;
+        }
+
+        select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        thead {
+            background-color: #34495e;
+            color: white;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status.approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status.rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .pagination a {
+            padding: 8px 12px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .pagination a:hover {
+            background-color: #2980b9;
+        }
+
+        .pagination a.disabled {
+            background-color: #bdc3c7;
+            pointer-events: none;
+        }
+
+        .thought-content {
+            max-width: 500px;
+            word-wrap: break-word;
+        }
+
+        .score {
+            font-weight: 600;
+            color: #e74c3c;
+        }
+
+        .timestamp {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Thought Evaluations</h1>
+
+        <div class="nav-links">
+            <a href="/ui/evaluations">Evaluations</a>
+            <a href="/ui/evaluations/stats">Statistics</a>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="statusFilter">Filter by Status:</label>
+                <select id="statusFilter" onchange="filterByStatus(this.value)">
+                    <option value="">All</option>
+                    <option value="APPROVED">Approved</option>
+                    <option value="REJECTED">Rejected</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="sortOrder">Sort by Date:</label>
+                <select id="sortOrder" onchange="sortByDate(this.value)">
+                    <option value="desc">Newest First</option>
+                    <option value="asc">Oldest First</option>
+                </select>
+            </div>
+        </div>
+
+        {#if evaluations.isEmpty()}
+        <div class="empty-state">
+            <h3>No evaluations found</h3>
+            <p>There are no thought evaluations to display.</p>
+        </div>
+        {#else}
+        <table>
+            <thead>
+                <tr>
+                    <th>Thought Content</th>
+                    <th>Status</th>
+                    <th>Similarity Score</th>
+                    <th>Evaluated At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {#for evaluation in evaluations}
+                <tr data-status="{evaluation.status}">
+                    <td class="thought-content">{evaluation.thoughtContent}</td>
+                    <td>
+                        <span class="status {evaluation.status.toLowerCase()}">
+                            {evaluation.status}
+                        </span>
+                    </td>
+                    <td class="score">{evaluation.similarityScore}</td>
+                    <td class="timestamp">{evaluation.evaluatedAt}</td>
+                </tr>
+                {/for}
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            {#if page > 0}
+            <a href="?page={page - 1}&size={size}">Previous</a>
+            {#else}
+            <a href="#" class="disabled">Previous</a>
+            {/if}
+
+            <span>Page {page + 1}</span>
+
+            {#if hasMore}
+            <a href="?page={page + 1}&size={size}">Next</a>
+            {#else}
+            <a href="#" class="disabled">Next</a>
+            {/if}
+        </div>
+        {/if}
+    </div>
+
+    <script>
+        function filterByStatus(status) {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                if (status === '' || row.dataset.status === status) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function sortByDate(order) {
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                const dateA = new Date(a.querySelector('.timestamp').textContent);
+                const dateB = new Date(b.querySelector('.timestamp').textContent);
+                return order === 'asc' ? dateA - dateB : dateB - dateA;
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    </script>
+</body>
+</html>

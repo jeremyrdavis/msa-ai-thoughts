@@ -284,60 +284,60 @@ Target Platform: Quarkus microservice with Langchain4j, PostgreSQL, and Kafka in
 #### Task Group 6: Web Interface, Health Checks, and Metrics
 **Dependencies:** Task Group 5
 
-- [ ] 6.0 Complete web UI and observability
-  - [ ] 6.1 Write 2-8 focused tests for health checks
+- [x] 6.0 Complete web UI and observability
+  - [x] 6.1 Write 2-8 focused tests for health checks
     - Limit to 2-8 highly focused tests maximum
     - Test database health check returns UP when connected
     - Test Kafka health check returns UP when connected
     - Test LLM endpoint health check
     - Skip testing all failure scenarios
-  - [ ] 6.2 Create Qute templates for evaluation UI
+  - [x] 6.2 Create Qute templates for evaluation UI
     - Create src/main/resources/templates/evaluations.html
     - Table layout with columns: Thought Content, Status, Similarity Score, Evaluated At
     - Add filtering controls for status (APPROVED/REJECTED)
     - Add sorting controls by evaluation date
     - Use simple HTML/CSS styling (no complex frameworks)
     - Include pagination controls
-  - [ ] 6.3 Create Qute template for stats dashboard
+  - [x] 6.3 Create Qute template for stats dashboard
     - Create src/main/resources/templates/stats.html
     - Display total evaluations count
     - Display approved count and percentage
     - Display rejected count and percentage
     - Display average similarity score
     - Use simple card layout with CSS styling
-  - [ ] 6.4 Create EvaluationUIResource controller
+  - [x] 6.4 Create EvaluationUIResource controller
     - JAX-RS resource with @Path("/ui/evaluations")
     - @Produces(MediaType.TEXT_HTML)
     - Inject Template instances for evaluations and stats pages
     - GET /ui/evaluations endpoint renders evaluations.html with data
     - GET /ui/evaluations/stats endpoint renders stats.html with data
-  - [ ] 6.5 Implement database health check
+  - [x] 6.5 Implement database health check
     - Create DatabaseHealthCheck class
     - Implement HealthCheck interface with @Readiness annotation
     - ApplicationScoped with injected DataSource
     - Use try-with-resources and connection.isValid() check
     - Return HealthCheckResponse.up() or down()
     - Follow existing DatabaseHealthCheck pattern
-  - [ ] 6.6 Implement Kafka health check
+  - [x] 6.6 Implement Kafka health check
     - Create KafkaHealthCheck class
     - Implement HealthCheck interface with @Readiness annotation
     - ApplicationScoped with injected Kafka consumer health indicator
     - Check consumer connectivity status
     - Return HealthCheckResponse.up() or down()
-  - [ ] 6.7 Implement LLM endpoint health check
+  - [x] 6.7 Implement LLM endpoint health check
     - Create LLMHealthCheck class
     - Implement HealthCheck interface with @Liveness annotation
     - ApplicationScoped with injected EmbeddingService
     - Attempt simple embedding call or endpoint ping
     - Return HealthCheckResponse.up() or down()
     - Add timeout to prevent hanging health checks
-  - [ ] 6.8 Add Prometheus metrics
+  - [x] 6.8 Add Prometheus metrics
     - Use @Counted annotation on EvaluationService.evaluateThought method for throughput
     - Use @Timed annotation for processing time metrics
     - Create custom metrics for approval/rejection rates using MeterRegistry
     - Add metric for LLM call success/failure rates
     - Add metric for average similarity scores
-  - [ ] 6.9 Ensure health checks and UI tests pass
+  - [x] 6.9 Ensure health checks and UI tests pass
     - Run ONLY the 2-8 tests written in 6.1
     - Verify health endpoints return correct status
     - Verify UI pages render with data
