@@ -1,6 +1,6 @@
 # Product Roadmap
 
-1. [ ] **PostgreSQL Database Setup** — Configure PostgreSQL database in OpenShift with proper schema for storing positive thoughts, including tables for thoughts and ratings with appropriate indexes and constraints. `S`
+1. [x] **PostgreSQL Database Setup** — Configure PostgreSQL database in OpenShift with proper schema for storing positive thoughts, including tables for thoughts and ratings with appropriate indexes and constraints. `S`
 
 2. [x] **Thoughts Service Backend** — Create Quarkus microservice with REST endpoints for CRUD operations on positive thoughts, connecting to PostgreSQL database with proper entity mapping and transaction management. `M`
 
