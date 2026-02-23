@@ -12,7 +12,7 @@
 
 6. [x] **Rating System** — Add thumbs up/down rating functionality with backend persistence to PostgreSQL, updating rating counts in real-time and preventing duplicate votes. `M`
 
-7. [ ] **Kafka Infrastructure** — Deploy Red Hat AMQ Streams Operator and configure Kafka cluster in OpenShift with topics for thought events and rating events. `S`
+7. [x] **Kafka Infrastructure** — Deploy Red Hat AMQ Streams Operator and configure Kafka cluster in OpenShift with topics for thought events and rating events. `S`
 
 8. [x] **Event-Driven Architecture** — Refactor services to publish events to Kafka when thoughts are created/updated/rated, implementing event consumers to decouple service communication. `M`
 
