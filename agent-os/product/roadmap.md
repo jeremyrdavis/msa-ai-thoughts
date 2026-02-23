@@ -18,7 +18,7 @@
 
 9. [ ] **OpenShift AI LLM Setup** — Configure Red Hat OpenShift AI to serve an LLM model with appropriate resource allocation and endpoint configuration for thought evaluation. `M`
 
-10. [ ] **AI Evaluation Service** — Create Quarkus microservice that consumes thought events from Kafka, calls the LLM via OpenShift AI to evaluate thought quality, and stores evaluation results. `L`
+10. [x] **AI Evaluation Service** — Create Quarkus microservice that consumes thought events from Kafka, calls the LLM via OpenShift AI to evaluate thought quality, and stores evaluation results. `L`
 
 11. [ ] **AI Evaluation UI** — Extend frontend to display AI evaluation results for thoughts, showing LLM analysis and recommendations with clear visual indicators. `S`
 
